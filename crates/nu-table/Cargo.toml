@@ -19,6 +19,7 @@ nu-ansi-term = { workspace = true }
 once_cell = { workspace = true }
 fancy-regex = { workspace = true }
 tabled = { workspace = true, features = ["color"], default-features = false }
+im = "15.1.0"
 
 [dev-dependencies]
 # nu-test-support = { path="../nu-test-support", version = "0.94.1"  }

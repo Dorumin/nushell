@@ -271,21 +271,21 @@ impl Call {
         &self,
         start: usize,
         mut eval: F,
-    ) -> Result<Vec<Value>, ShellError>
+    ) -> Result<im::Vector<Value>, ShellError>
     where
         F: FnMut(&Expression) -> Result<Value, ShellError>,
     {
-        let mut output = Vec::new();
+        let mut output = im::Vector::new();
 
         for (expr, spread) in self.rest_iter(start) {
             let result = eval(expr)?;
             if spread {
                 match result {
-                    Value::List { mut vals, .. } => output.append(&mut vals),
+                    Value::List { vals, .. } => output.append(vals),
                     _ => return Err(ShellError::CannotSpreadAsList { span: expr.span }),
                 }
             } else {
-                output.push(result);
+                output.push_back(result);
             }
         }
 

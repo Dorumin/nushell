@@ -47,12 +47,12 @@ pub trait Eval {
             }
             Expr::DateTime(dt) => Ok(Value::date(*dt, expr.span)),
             Expr::List(list) => {
-                let mut output = vec![];
+                let mut output = im::vector![];
                 for item in list {
                     match item {
-                        ListItem::Item(expr) => output.push(Self::eval::<D>(state, mut_state, expr)?),
+                        ListItem::Item(expr) => output.push_back(Self::eval::<D>(state, mut_state, expr)?),
                         ListItem::Spread(_, expr) => match Self::eval::<D>(state, mut_state, expr)? {
-                            Value::List { vals, .. } => output.extend(vals),
+                            Value::List { vals, .. } => output.append(vals),
                             _ => return Err(ShellError::CannotSpreadAsList { span: expr.span }),
                         },
                     }
@@ -124,13 +124,13 @@ pub trait Eval {
                     }
                 }
 
-                let mut output_rows = vec![];
+                let mut output_rows = im::vector![];
                 for val in table.rows.as_ref() {
                     let record = output_headers.iter().zip(val.as_ref()).map(|(col, expr)| {
                         Self::eval::<D>(state, mut_state, expr).map(|val| (col.clone(), val))
                     }).collect::<Result<_,_>>()?;
 
-                    output_rows.push(Value::record(
+                    output_rows.push_back(Value::record(
                         record,
                         expr.span,
                     ));

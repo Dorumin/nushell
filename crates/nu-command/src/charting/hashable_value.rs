@@ -241,7 +241,7 @@ mod test {
     fn from_unhashable_value() {
         let span = Span::test_data();
         let values = [
-            Value::list(vec![Value::bool(true, span)], span),
+            Value::list(im::vector![Value::bool(true, span)], span),
             Value::closure(
                 Closure {
                     block_id: 0,

@@ -38,7 +38,7 @@ impl ExpandedTable {
         expanded_table_kv(record, Cfg { opts, format: self })
     }
 
-    pub fn build_list(self, vals: &[Value], opts: TableOpts<'_>) -> StringResult {
+    pub fn build_list(self, vals: &im::Vector<Value>, opts: TableOpts<'_>) -> StringResult {
         let cfg = Cfg {
             opts: opts.clone(),
             format: self,
@@ -58,7 +58,7 @@ struct Cfg<'a> {
     format: ExpandedTable,
 }
 
-fn expanded_table_list(input: &[Value], cfg: Cfg<'_>) -> TableResult {
+fn expanded_table_list(input: &im::Vector<Value>, cfg: Cfg<'_>) -> TableResult {
     const PADDING_SPACE: usize = 2;
     const SPLIT_LINE_SPACE: usize = 1;
     const ADDITIONAL_CELL_SPACE: usize = PADDING_SPACE + SPLIT_LINE_SPACE;
@@ -512,13 +512,13 @@ fn expanded_table_entry2(item: &Value, cfg: Cfg<'_>) -> NuText {
     }
 }
 
-fn is_simple_list(vals: &[Value]) -> bool {
+fn is_simple_list(vals: &im::Vector<Value>) -> bool {
     vals.iter()
         .all(|v| !matches!(v, Value::Record { .. } | Value::List { .. }))
 }
 
 fn value_list_to_string(
-    vals: &[Value],
+    vals: &im::Vector<Value>,
     config: &Config,
     style_computer: &StyleComputer,
     flatten_sep: &str,

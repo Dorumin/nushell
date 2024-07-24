@@ -52,7 +52,7 @@ fn try_build_map(
 }
 
 fn try_build_list(
-    vals: Vec<Value>,
+    vals: im::Vector<Value>,
     ctrlc: Option<Arc<AtomicBool>>,
     config: &NuConfig,
     span: Span,

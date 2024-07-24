@@ -86,7 +86,7 @@ fn command(
 }
 
 fn datatype_list(span: Span) -> Value {
-    let types: Vec<Value> = [
+    let types: im::Vector<Value> = [
         ("null", ""),
         ("bool", ""),
         ("u8", ""),

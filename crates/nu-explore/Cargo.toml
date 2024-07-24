@@ -33,3 +33,4 @@ unicode-width = { workspace = true }
 lscolors = { workspace = true, default-features = false, features = [
   "nu-ansi-term",
 ] }
+im = "15.1.0"

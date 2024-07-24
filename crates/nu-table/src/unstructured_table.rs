@@ -146,7 +146,7 @@ fn build_vertical_map(record: Record, config: &Config) -> TableValue {
     TableValue::Column(rows)
 }
 
-fn build_vertical_array(vals: Vec<Value>, config: &Config) -> TableValue {
+fn build_vertical_array(vals: im::Vector<Value>, config: &Config) -> TableValue {
     let map = vals
         .into_iter()
         .map(|val| convert_nu_value_to_table_value(val, config))
@@ -155,7 +155,7 @@ fn build_vertical_array(vals: Vec<Value>, config: &Config) -> TableValue {
     TableValue::Column(map)
 }
 
-fn is_valid_record(vals: &[Value]) -> bool {
+fn is_valid_record(vals: &im::Vector<Value>) -> bool {
     let mut first_record: Option<&Record> = None;
     for val in vals {
         match val {
@@ -176,15 +176,15 @@ fn is_valid_record(vals: &[Value]) -> bool {
     true
 }
 
-fn count_columns_in_record(vals: &[Value]) -> usize {
+fn count_columns_in_record(vals: &im::Vector<Value>) -> usize {
     match vals.iter().next() {
         Some(Value::Record { val, .. }) => val.len(),
         _ => 0,
     }
 }
 
-fn build_map_from_record(vals: Vec<Value>, config: &Config) -> TableValue {
-    let mut list = vec![];
+fn build_map_from_record(vals: im::Vector<Value>, config: &Config) -> TableValue {
+    let mut list: Vec<Vec<TableValue>> = vec![];
 
     let head = get_columns_in_record(&vals);
     let count_columns = head.len();
@@ -210,7 +210,7 @@ fn build_map_from_record(vals: Vec<Value>, config: &Config) -> TableValue {
     TableValue::Row(columns)
 }
 
-fn get_columns_in_record(vals: &[Value]) -> Vec<String> {
+fn get_columns_in_record(vals: &im::Vector<Value>) -> Vec<String> {
     match vals.iter().next() {
         Some(Value::Record { val, .. }) => val.columns().cloned().collect(),
         _ => vec![],

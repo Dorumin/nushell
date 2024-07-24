@@ -72,7 +72,7 @@ impl SimplePluginCommand for FromVcf {
             ),
         });
 
-        let collected: Vec<_> = iter.collect();
+        let collected: im::Vector<_> = iter.collect();
         Ok(Value::list(collected, head))
     }
 }
@@ -140,7 +140,7 @@ fn properties_to_value(properties: Vec<Property>, span: Span) -> Value {
                     span,
                 )
             })
-            .collect::<Vec<Value>>(),
+            .collect::<im::Vector<Value>>(),
         span,
     )
 }
@@ -149,7 +149,7 @@ fn params_to_value(params: Vec<(String, Vec<String>)>, span: Span) -> Value {
     let mut row = IndexMap::new();
 
     for (param_name, param_values) in params {
-        let values: Vec<Value> = param_values
+        let values: im::Vector<Value> = param_values
             .into_iter()
             .map(|val| Value::string(val, span))
             .collect();

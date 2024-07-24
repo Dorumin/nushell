@@ -96,9 +96,9 @@ fn query_contains_modifiers(query: &str) -> bool {
 fn convert_gjson_value_to_nu_value(v: &gjValue, span: Span) -> Value {
     match v.kind() {
         gjson::Kind::Array => {
-            let mut vals = vec![];
+            let mut vals = im::vector![];
             v.each(|_k, v| {
-                vals.push(convert_gjson_value_to_nu_value(&v, span));
+                vals.push_back(convert_gjson_value_to_nu_value(&v, span));
                 true
             });
 

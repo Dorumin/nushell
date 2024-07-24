@@ -19,6 +19,7 @@ nu-plugin-core = { path = "../nu-plugin-core", version = "0.94.1", default-featu
 
 serde = { workspace = true }
 log = { workspace = true }
+im = "15.1.0"
 
 [dev-dependencies]
 typetag = "0.2"

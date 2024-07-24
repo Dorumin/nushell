@@ -84,7 +84,7 @@ pub fn execute_xpath_query(
     match res {
         Ok(r) => {
             let mut record = Record::new();
-            let mut records: Vec<Value> = vec![];
+            let mut records = im::vector![];
 
             match r {
                 sxd_xpath::Value::Nodeset(ns) => {
@@ -106,7 +106,7 @@ pub fn execute_xpath_query(
             // convert the cols and vecs to a table by creating individual records
             // for each item so we can then use a list to make a table
             for (k, v) in record {
-                records.push(Value::record(record! { k => v }, call.head))
+                records.push_back(Value::record(record! { k => v }, call.head))
             }
 
             Ok(Value::list(records, call.head))
@@ -138,7 +138,7 @@ mod tests {
     fn position_function_in_predicate() {
         let call = EvaluatedCall {
             head: Span::test_data(),
-            positional: vec![],
+            positional: im::vector![],
             named: vec![],
         };
 
@@ -153,11 +153,10 @@ mod tests {
         };
 
         let actual = query(&call, &text, Some(spanned_str)).expect("test should not fail");
-        let expected = Value::list(
+        let expected = Value::test_list(
             vec![Value::test_record(record! {
                 "count(//a/*[posit..." => Value::test_float(1.0),
-            })],
-            Span::test_data(),
+            })]
         );
 
         assert_eq!(actual, expected);
@@ -167,7 +166,7 @@ mod tests {
     fn functions_implicitly_coerce_argument_types() {
         let call = EvaluatedCall {
             head: Span::test_data(),
-            positional: vec![],
+            positional: im::vector![],
             named: vec![],
         };
 
@@ -182,11 +181,10 @@ mod tests {
         };
 
         let actual = query(&call, &text, Some(spanned_str)).expect("test should not fail");
-        let expected = Value::list(
+        let expected = Value::test_list(
             vec![Value::test_record(record! {
                 "count(//*[contain..." => Value::test_float(1.0),
-            })],
-            Span::test_data(),
+            })]
         );
 
         assert_eq!(actual, expected);

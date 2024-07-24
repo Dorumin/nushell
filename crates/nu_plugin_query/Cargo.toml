@@ -23,3 +23,4 @@ gjson = "0.8"
 scraper = { default-features = false, version = "0.19" }
 sxd-document = "0.3"
 sxd-xpath = "0.4"
+im = "15.1.0"

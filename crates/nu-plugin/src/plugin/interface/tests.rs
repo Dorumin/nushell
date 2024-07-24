@@ -357,7 +357,7 @@ fn manager_consume_call_run_forwards_to_receiver_with_context() -> Result<(), Sh
             name: "bar".into(),
             call: EvaluatedCall {
                 head: Span::test_data(),
-                positional: vec![],
+                positional: im::vector![],
                 named: vec![],
             },
             input: PipelineDataHeader::Empty,
@@ -391,7 +391,7 @@ fn manager_consume_call_run_forwards_to_receiver_with_pipeline_data() -> Result<
             name: "bar".into(),
             call: EvaluatedCall {
                 head: Span::test_data(),
-                positional: vec![],
+                positional: im::vector![],
                 named: vec![],
             },
             input: PipelineDataHeader::ListStream(ListStreamInfo {
@@ -438,7 +438,7 @@ fn manager_consume_call_run_deserializes_custom_values_in_args() -> Result<(), S
             name: "bar".into(),
             call: EvaluatedCall {
                 head: Span::test_data(),
-                positional: vec![value.clone()],
+                positional: im::vector![value.clone()],
                 named: vec![(
                     Spanned {
                         item: "flag".into(),

@@ -153,12 +153,12 @@ fn operate(
         PipelineData::Empty => Ok(PipelineData::Empty),
         PipelineData::Value(value, ..) => match value {
             Value::String { val, .. } => {
-                let captures = regex
+                let capsiter = regex
                     .captures_iter(&val)
-                    .map(|captures| captures_to_value(captures, &columns, head))
-                    .collect::<Result<_, _>>()?;
+                    .map(|captures| captures_to_value(captures, &columns, head));
 
-                Ok(Value::list(captures, head).into_pipeline_data())
+                Ok(ListStream::new(capsiter, head, None).into())
+
             }
             Value::List { vals, .. } => {
                 let iter = vals.into_iter().map(move |val| {

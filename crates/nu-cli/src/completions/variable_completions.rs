@@ -263,7 +263,7 @@ fn nested_suggestions(
             output
         }
         Value::List { vals, .. } => {
-            for column_name in get_columns(vals.as_slice()) {
+            for column_name in get_columns(&vals) {
                 output.push(SemanticSuggestion {
                     suggestion: Suggestion {
                         value: column_name,
@@ -299,7 +299,7 @@ fn recursive_value(val: &Value, sublevels: &[Vec<u8>]) -> Result<Value, Span> {
                 }
             }
             Value::List { vals, .. } => {
-                for col in get_columns(vals.as_slice()) {
+                for col in get_columns(vals) {
                     if col.as_bytes() == *sublevel {
                         let val = val.get_data_by_key(&col).ok_or(span)?;
                         return recursive_value(&val, next_sublevels);

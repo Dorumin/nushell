@@ -524,7 +524,7 @@ impl FromValue for Vec<Value> {
     fn from_value(v: Value) -> Result<Self, ShellError> {
         // FIXME: we may want to fail a little nicer here
         match v {
-            Value::List { vals, .. } => Ok(vals),
+            Value::List { vals, .. } => Ok(vals.into_iter().collect()),
             v => Err(ShellError::CantConvert {
                 to_type: "Vector of values".into(),
                 from_type: v.get_type().to_string(),

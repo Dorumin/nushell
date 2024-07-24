@@ -115,7 +115,7 @@ pub enum Value {
         internal_span: Span,
     },
     List {
-        vals: Vec<Value>,
+        vals: im::Vector<Value>,
         // note: spans are being refactored out of Value
         // please use .span() instead of matching this span value
         #[serde(rename = "span")]
@@ -523,8 +523,8 @@ impl Value {
         }
     }
 
-    /// Returns a reference to the inner list slice or an error if this `Value` is not a list
-    pub fn as_list(&self) -> Result<&[Value], ShellError> {
+    // /// Returns a reference to the inner list slice or an error if this `Value` is not a list
+    pub fn as_list(&self) -> Result<&im::Vector<Value>, ShellError> {
         if let Value::List { vals, .. } = self {
             Ok(vals)
         } else {
@@ -533,7 +533,7 @@ impl Value {
     }
 
     /// Unwraps the inner list `Vec` or returns an error if this `Value` is not a list
-    pub fn into_list(self) -> Result<Vec<Value>, ShellError> {
+    pub fn into_list(self) -> Result<im::Vector<Value>, ShellError> {
         if let Value::List { vals, .. } = self {
             Ok(vals)
         } else {
@@ -768,7 +768,7 @@ impl Value {
         match self {
             Value::Record { val, .. } => val.get(name).cloned(),
             Value::List { vals, .. } => {
-                let out = vals
+                let out: im::Vector<_> = vals
                     .iter()
                     .map(|item| {
                         item.as_record()
@@ -776,7 +776,7 @@ impl Value {
                             .and_then(|val| val.get(name).cloned())
                             .unwrap_or(Value::nothing(span))
                     })
-                    .collect::<Vec<_>>();
+                    .collect();
 
                 if !out.is_empty() {
                     Some(Value::list(out, span))
@@ -983,10 +983,7 @@ impl Value {
                     match current {
                         Value::List { mut vals, .. } => {
                             if *count < vals.len() {
-                                // `vals` is owned and will be dropped right after this,
-                                // so we can `swap_remove` the value at index `count`
-                                // without worrying about preserving order.
-                                current = vals.swap_remove(*count);
+                                current = vals.remove(*count);
                             } else if *optional {
                                 return Ok(Value::nothing(*origin_span)); // short-circuit
                             } else if vals.is_empty() {
@@ -1285,7 +1282,7 @@ impl Value {
                             });
                         } else {
                             // If the upsert is at 1 + the end of the list, it's OK.
-                            vals.push(new_val);
+                            vals.push_back(new_val);
                         }
                     }
                     Value::Error { error, .. } => return Err(*error.clone()),
@@ -1681,7 +1678,7 @@ impl Value {
                             });
                         } else {
                             // If the insert is at 1 + the end of the list, it's OK.
-                            vals.push(new_val);
+                            vals.push_back(new_val);
                         }
                     }
                     _ => {
@@ -1853,7 +1850,7 @@ impl Value {
         }
     }
 
-    pub fn list(vals: Vec<Value>, span: Span) -> Value {
+    pub fn list(vals: im::Vector<Value>, span: Span) -> Value {
         Value::List {
             vals,
             internal_span: span,
@@ -1965,7 +1962,8 @@ impl Value {
     /// Note: Only use this for test data, *not* live data, as it will point into unknown source
     /// when used in errors.
     pub fn test_list(vals: Vec<Value>) -> Value {
-        Value::list(vals, Span::test_data())
+        // The conversion should be fine since this is just for test data.
+        Value::list(im::Vector::from(vals), Span::test_data())
     }
 
     /// Note: Only use this for test data, *not* live data, as it will point into unknown source
@@ -2476,13 +2474,13 @@ impl Value {
         match (self, rhs) {
             (Value::List { vals: lhs, .. }, Value::List { vals: rhs, .. }) => {
                 let mut lhs = lhs.clone();
-                let mut rhs = rhs.clone();
-                lhs.append(&mut rhs);
+                let rhs = rhs.clone();
+                lhs.append(rhs);
                 Ok(Value::list(lhs, span))
             }
             (Value::List { vals: lhs, .. }, val) => {
                 let mut lhs = lhs.clone();
-                lhs.push(val.clone());
+                lhs.push_back(val.clone());
                 Ok(Value::list(lhs, span))
             }
             (val, Value::List { vals: rhs, .. }) => {

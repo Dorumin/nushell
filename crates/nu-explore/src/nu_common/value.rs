@@ -14,9 +14,9 @@ pub fn collect_pipeline(input: PipelineData) -> Result<(Vec<String>, Vec<Vec<Val
 }
 
 fn collect_list_stream(stream: ListStream) -> (Vec<String>, Vec<Vec<Value>>) {
-    let mut records = vec![];
+    let mut records = im::vector![];
     for item in stream {
-        records.push(item);
+        records.push_back(item);
     }
 
     let mut cols = get_columns(&records);
@@ -123,13 +123,14 @@ pub fn collect_input(value: Value) -> Result<(Vec<String>, Vec<Vec<Value>>)> {
     }
 }
 
-fn convert_records_to_dataset(cols: &[String], records: Vec<Value>) -> Vec<Vec<Value>> {
+fn convert_records_to_dataset(cols: &[String], records: im::Vector<Value>) -> Vec<Vec<Value>> {
     if !cols.is_empty() {
         create_table_for_record(cols, &records)
     } else if cols.is_empty() && records.is_empty() {
         vec![]
     } else if cols.len() == records.len() {
-        vec![records]
+        // Terrible hack
+        vec![records.into_iter().collect()]
     } else {
         // I am not sure whether it's good to return records as its length LIKELY
         // will not match columns, which makes no sense......
@@ -141,7 +142,7 @@ fn convert_records_to_dataset(cols: &[String], records: Vec<Value>) -> Vec<Vec<V
     }
 }
 
-fn create_table_for_record(headers: &[String], items: &[Value]) -> Vec<Vec<Value>> {
+fn create_table_for_record(headers: &[String], items: &im::Vector<Value>) -> Vec<Vec<Value>> {
     let mut data = vec![Vec::new(); items.len()];
 
     for (i, item) in items.iter().enumerate() {

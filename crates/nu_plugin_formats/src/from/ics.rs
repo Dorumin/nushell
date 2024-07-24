@@ -60,12 +60,12 @@ impl SimplePluginCommand for FromIcs {
         let buf_reader = BufReader::new(input_bytes);
         let parser = ical::IcalParser::new(buf_reader);
 
-        let mut output = vec![];
+        let mut output = im::vector![];
 
         for calendar in parser {
             match calendar {
-                Ok(c) => output.push(calendar_to_value(c, head)),
-                Err(e) => output.push(Value::error(
+                Ok(c) => output.push_back(calendar_to_value(c, head)),
+                Err(e) => output.push_back(Value::error(
                     ShellError::UnsupportedInput {
                         msg: format!("input cannot be parsed as .ics ({e})"),
                         input: "value originates from here".into(),
@@ -125,7 +125,7 @@ fn events_to_value(events: Vec<IcalEvent>, span: Span) -> Value {
                     span,
                 )
             })
-            .collect::<Vec<Value>>(),
+            .collect::<im::Vector<Value>>(),
         span,
     )
 }
@@ -140,7 +140,7 @@ fn alarms_to_value(alarms: Vec<IcalAlarm>, span: Span) -> Value {
                     span,
                 )
             })
-            .collect::<Vec<Value>>(),
+            .collect::<im::Vector<Value>>(),
         span,
     )
 }
@@ -158,7 +158,7 @@ fn todos_to_value(todos: Vec<IcalTodo>, span: Span) -> Value {
                     span,
                 )
             })
-            .collect::<Vec<Value>>(),
+            .collect::<im::Vector<Value>>(),
         span,
     )
 }
@@ -173,7 +173,7 @@ fn journals_to_value(journals: Vec<IcalJournal>, span: Span) -> Value {
                     span,
                 )
             })
-            .collect::<Vec<Value>>(),
+            .collect::<im::Vector<Value>>(),
         span,
     )
 }
@@ -188,7 +188,7 @@ fn free_busys_to_value(free_busys: Vec<IcalFreeBusy>, span: Span) -> Value {
                     span,
                 )
             })
-            .collect::<Vec<Value>>(),
+            .collect::<im::Vector<Value>>(),
         span,
     )
 }
@@ -206,7 +206,7 @@ fn timezones_to_value(timezones: Vec<IcalTimeZone>, span: Span) -> Value {
                     span,
                 )
             })
-            .collect::<Vec<Value>>(),
+            .collect::<im::Vector<Value>>(),
         span,
     )
 }
@@ -221,7 +221,7 @@ fn timezone_transitions_to_value(transitions: Vec<IcalTimeZoneTransition>, span:
                     span,
                 )
             })
-            .collect::<Vec<Value>>(),
+            .collect::<im::Vector<Value>>(),
         span,
     )
 }
@@ -250,7 +250,7 @@ fn properties_to_value(properties: Vec<Property>, span: Span) -> Value {
                     span,
                 )
             })
-            .collect::<Vec<Value>>(),
+            .collect::<im::Vector<Value>>(),
         span,
     )
 }
@@ -259,7 +259,7 @@ fn params_to_value(params: Vec<(String, Vec<String>)>, span: Span) -> Value {
     let mut row = IndexMap::new();
 
     for (param_name, param_values) in params {
-        let values: Vec<Value> = param_values
+        let values: im::Vector<Value> = param_values
             .into_iter()
             .map(|val| Value::string(val, span))
             .collect();

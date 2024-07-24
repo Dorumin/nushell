@@ -63,7 +63,7 @@ fn encoding_test_data(row_cnt: usize, col_cnt: usize) -> Value {
             .collect(),
     );
 
-    Value::list(vec![record; row_cnt], Span::test_data())
+    Value::list(im::vector![record; row_cnt], Span::test_data())
 }
 
 fn bench_command(

@@ -18,6 +18,7 @@ nu-plugin-core = { path = "../nu-plugin-core", version = "0.94.1", default-featu
 
 log = { workspace = true }
 thiserror = "1.0"
+im = "15.1.0"
 
 [dev-dependencies]
 serde = { workspace = true }

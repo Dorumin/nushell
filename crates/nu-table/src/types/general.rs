@@ -14,7 +14,7 @@ use nu_protocol::{Config, Record, ShellError, Value};
 pub struct JustTable;
 
 impl JustTable {
-    pub fn table(input: &[Value], opts: TableOpts<'_>) -> StringResult {
+    pub fn table(input: &im::Vector<Value>, opts: TableOpts<'_>) -> StringResult {
         create_table(input, opts)
     }
 
@@ -23,7 +23,7 @@ impl JustTable {
     }
 }
 
-fn create_table(input: &[Value], opts: TableOpts<'_>) -> Result<Option<String>, ShellError> {
+fn create_table(input: &im::Vector<Value>, opts: TableOpts<'_>) -> Result<Option<String>, ShellError> {
     match table(input, &opts)? {
         Some(mut out) => {
             let left = opts.config.table_indent.left;
@@ -72,7 +72,7 @@ fn kv_table(record: &Record, opts: TableOpts<'_>) -> StringResult {
     Ok(table)
 }
 
-fn table(input: &[Value], opts: &TableOpts<'_>) -> TableResult {
+fn table(input: &im::Vector<Value>, opts: &TableOpts<'_>) -> TableResult {
     if input.is_empty() {
         return Ok(None);
     }
@@ -106,7 +106,7 @@ fn table(input: &[Value], opts: &TableOpts<'_>) -> TableResult {
 }
 
 fn to_table_with_header(
-    input: &[Value],
+    input: &im::Vector<Value>,
     headers: &[String],
     with_index: bool,
     row_offset: usize,
@@ -149,7 +149,7 @@ fn to_table_with_header(
 }
 
 fn to_table_with_no_header(
-    input: &[Value],
+    input: &im::Vector<Value>,
     with_index: bool,
     row_offset: usize,
     opts: &TableOpts<'_>,

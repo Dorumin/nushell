@@ -111,7 +111,7 @@ impl Command for Zip {
         Ok(input
             .into_iter()
             .zip(other)
-            .map(move |(x, y)| Value::list(vec![x, y], head))
+            .map(move |(x, y)| Value::list(im::vector![x, y], head))
             .into_pipeline_data_with_metadata(head, engine_state.ctrlc.clone(), metadata))
     }
 }

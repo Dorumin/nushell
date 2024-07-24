@@ -261,7 +261,7 @@ pub fn transpose(
                                     vals.push(x);
                                 }
                                 v => {
-                                    *v = Value::list(vec![std::mem::take(v), x], current_span);
+                                    *v = Value::list(im::vector![std::mem::take(v), x], current_span);
                                 }
                             };
                         } else if args.keep_last {

@@ -43,6 +43,7 @@ sysinfo = { workspace = true }
 unicode-segmentation = { workspace = true }
 uuid = { workspace = true, features = ["v4"] }
 which = { workspace = true }
+im = "15.1.0"
 
 [features]
 plugin = ["nu-plugin-engine"]

@@ -161,7 +161,7 @@ fn index_of_impl(input: &[u8], arg: &Arguments, span: Span) -> Value {
 }
 
 fn search_all_index(input: &[u8], pattern: &[u8], from_end: bool, span: Span) -> Value {
-    let mut result = vec![];
+    let mut result = im::vector![];
     if from_end {
         let (mut left, mut right) = (
             input.len() as isize - pattern.len() as isize,
@@ -169,7 +169,7 @@ fn search_all_index(input: &[u8], pattern: &[u8], from_end: bool, span: Span) ->
         );
         while left >= 0 {
             if &input[left as usize..right as usize] == pattern {
-                result.push(Value::int(left as i64, span));
+                result.push_back(Value::int(left as i64, span));
                 left -= pattern.len() as isize;
                 right -= pattern.len() as isize;
             } else {
@@ -185,7 +185,7 @@ fn search_all_index(input: &[u8], pattern: &[u8], from_end: bool, span: Span) ->
         let pattern_len = pattern.len();
         while right <= input_len {
             if &input[left..right] == pattern {
-                result.push(Value::int(left as i64, span));
+                result.push_back(Value::int(left as i64, span));
                 left += pattern_len;
                 right += pattern_len;
             } else {

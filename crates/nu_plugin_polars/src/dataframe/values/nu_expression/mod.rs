@@ -291,9 +291,9 @@ pub fn expr_to_value(expr: &Expr, span: Span) -> Result<Value, ShellError> {
             by,
             sort_options,
         } => {
-            let by: Result<Vec<Value>, ShellError> =
+            let by: Result<im::Vector<Value>, ShellError> =
                 by.iter().map(|b| expr_to_value(b, span)).collect();
-            let descending: Vec<Value> = sort_options
+            let descending: im::Vector<Value> = sort_options
                 .descending
                 .iter()
                 .map(|r| Value::bool(*r, span))
@@ -354,7 +354,7 @@ pub fn expr_to_value(expr: &Expr, span: Span) -> Result<Value, ShellError> {
             output_type,
             options,
         } => {
-            let input: Result<Vec<Value>, ShellError> =
+            let input: Result<im::Vector<Value>, ShellError> =
                 input.iter().map(|e| expr_to_value(e, span)).collect();
             Ok(Value::record(
                 record! {
@@ -371,7 +371,7 @@ pub fn expr_to_value(expr: &Expr, span: Span) -> Result<Value, ShellError> {
             function,
             options,
         } => {
-            let input: Result<Vec<Value>, ShellError> =
+            let input: Result<im::Vector<Value>, ShellError> =
                 input.iter().map(|e| expr_to_value(e, span)).collect();
             Ok(Value::record(
                 record! {
@@ -387,7 +387,7 @@ pub fn expr_to_value(expr: &Expr, span: Span) -> Result<Value, ShellError> {
             partition_by,
             options,
         } => {
-            let partition_by: Result<Vec<Value>, ShellError> = partition_by
+            let partition_by: Result<im::Vector<Value>, ShellError> = partition_by
                 .iter()
                 .map(|e| expr_to_value(e, span))
                 .collect();

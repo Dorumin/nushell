@@ -223,9 +223,9 @@ fn get_documentation(
         if let Some(decl_id) = engine_state.find_decl(b"table", &[]) {
             // FIXME: we may want to make this the span of the help command in the future
             let span = Span::unknown();
-            let mut vals = vec![];
+            let mut vals = im::vector![];
             for (input, output) in &sig.input_output_types {
-                vals.push(Value::record(
+                vals.push_back(Value::record(
                     record! {
                         "input" => Value::string(input.to_string(), span),
                         "output" => Value::string(output.to_string(), span),

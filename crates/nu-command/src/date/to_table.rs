@@ -94,7 +94,7 @@ fn parse_date_into_table(date: DateTime<FixedOffset>, head: Span) -> Value {
         "timezone" => Value::string(date.offset().to_string(), head),
     };
 
-    Value::list(vec![Value::record(record, head)], head)
+    Value::list(im::vector![Value::record(record, head)], head)
 }
 
 fn helper(val: Value, head: Span) -> Value {

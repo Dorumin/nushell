@@ -419,6 +419,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "bitmaps"
+version = "2.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "031043d04099746d8db04daf1fa424b2bc8bd69d92b25962dcde24da39ab64a2"
+dependencies = [
+ "typenum",
+]
+
+[[package]]
 name = "bitvec"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1974,6 +1983,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "im"
+version = "15.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d0acd33ff0285af998aaf9b57342af478078f53492322fafc47450e09397e0e9"
+dependencies = [
+ "bitmaps",
+ "rand_core",
+ "rand_xoshiro",
+ "serde",
+ "sized-chunks",
+ "typenum",
+ "version_check",
+]
+
+[[package]]
 name = "indexmap"
 version = "2.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2829,6 +2853,7 @@ dependencies = [
  "crossterm",
  "fancy-regex",
  "fuzzy-matcher",
+ "im",
  "is_executable",
  "log",
  "lscolors",
@@ -2874,6 +2899,7 @@ version = "0.94.1"
 dependencies = [
  "fancy-regex",
  "heck 0.5.0",
+ "im",
  "itertools 0.12.1",
  "nu-ansi-term",
  "nu-cmd-base",
@@ -2897,6 +2923,7 @@ dependencies = [
 name = "nu-cmd-lang"
 version = "0.94.1"
 dependencies = [
+ "im",
  "itertools 0.12.1",
  "nu-engine",
  "nu-parser",
@@ -2955,6 +2982,7 @@ dependencies = [
  "filetime",
  "fs_extra",
  "human-date-parser",
+ "im",
  "indexmap",
  "indicatif",
  "itertools 0.12.1",
@@ -3041,6 +3069,7 @@ dependencies = [
 name = "nu-engine"
 version = "0.94.1"
 dependencies = [
+ "im",
  "nu-glob",
  "nu-path",
  "nu-protocol",
@@ -3054,6 +3083,7 @@ dependencies = [
  "ansi-str",
  "anyhow",
  "crossterm",
+ "im",
  "log",
  "lscolors",
  "nu-ansi-term",
@@ -3139,6 +3169,7 @@ dependencies = [
 name = "nu-plugin"
 version = "0.94.1"
 dependencies = [
+ "im",
  "log",
  "nix",
  "nu-engine",
@@ -3154,6 +3185,7 @@ dependencies = [
 name = "nu-plugin-core"
 version = "0.94.1"
 dependencies = [
+ "im",
  "interprocess",
  "log",
  "nu-plugin-protocol",
@@ -3168,6 +3200,7 @@ dependencies = [
 name = "nu-plugin-engine"
 version = "0.94.1"
 dependencies = [
+ "im",
  "log",
  "nu-engine",
  "nu-plugin-core",
@@ -3184,6 +3217,7 @@ name = "nu-plugin-protocol"
 version = "0.94.1"
 dependencies = [
  "bincode",
+ "im",
  "nu-protocol",
  "nu-utils",
  "semver",
@@ -3227,6 +3261,7 @@ dependencies = [
  "chrono",
  "chrono-humanize",
  "fancy-regex",
+ "im",
  "indexmap",
  "lru",
  "miette",
@@ -3283,6 +3318,7 @@ name = "nu-table"
 version = "0.94.1"
 dependencies = [
  "fancy-regex",
+ "im",
  "nu-ansi-term",
  "nu-color-config",
  "nu-engine",
@@ -3354,6 +3390,7 @@ version = "0.94.1"
 dependencies = [
  "eml-parser",
  "ical",
+ "im",
  "indexmap",
  "nu-plugin",
  "nu-plugin-test-support",
@@ -3386,6 +3423,7 @@ dependencies = [
  "chrono",
  "chrono-tz 0.9.0",
  "fancy-regex",
+ "im",
  "indexmap",
  "mimalloc",
  "nu-cmd-lang",
@@ -3415,6 +3453,7 @@ name = "nu_plugin_query"
 version = "0.94.1"
 dependencies = [
  "gjson",
+ "im",
  "nu-plugin",
  "nu-protocol",
  "scraper",
@@ -3554,6 +3593,7 @@ version = "0.94.1"
 dependencies = [
  "chrono",
  "fancy-regex",
+ "im",
  "nu-engine",
  "nu-parser",
  "nu-protocol",
@@ -4714,6 +4754,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "rand_xoshiro"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6f97cdb2a36ed4183de61b2f824cc45c9f1037f28afe0a322e9fff4c108b5aaa"
+dependencies = [
+ "rand_core",
+]
+
+[[package]]
 name = "ratatui"
 version = "0.26.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5501,6 +5550,16 @@ name = "siphasher"
 version = "0.3.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "38b58827f4464d87d377d175e90bf58eb00fd8716ff0a62f80356b5e61555d0d"
+
+[[package]]
+name = "sized-chunks"
+version = "0.6.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "16d69225bde7a69b235da73377861095455d298f2b970996eec25ddbb42b3d1e"
+dependencies = [
+ "bitmaps",
+ "typenum",
+]
 
 [[package]]
 name = "slab"

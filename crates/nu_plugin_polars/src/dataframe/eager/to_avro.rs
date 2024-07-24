@@ -113,7 +113,7 @@ fn command(
     let file_value = Value::string(format!("saved {:?}", &file_name.item), file_name.span);
 
     Ok(PipelineData::Value(
-        Value::list(vec![file_value], call.head),
+        Value::list(im::vector![file_value], call.head),
         None,
     ))
 }

@@ -231,14 +231,14 @@ pub fn rotate(
             Record::from_raw_cols_vals(new_column_names, new_values, input_span, call.head)?;
 
         return Ok(
-            Value::list(vec![Value::record(record, call.head)], call.head)
+            Value::list(im::vector![Value::record(record, call.head)], call.head)
                 .into_pipeline_data()
                 .set_metadata(metadata),
         );
     }
 
     // holder for the new records
-    let mut final_values = vec![];
+    let mut final_values = im::vector![];
 
     // the number of initial columns will be our number of rows, so we iterate through that to get the new number of rows that we need to make
     // for counter clockwise, we're iterating from right to left and have a pair of (index, value)
@@ -277,7 +277,7 @@ pub fn rotate(
         let record =
             Record::from_raw_cols_vals(new_column_names.clone(), new_vals, input_span, call.head)?;
 
-        final_values.push(Value::record(record, call.head))
+        final_values.push_back(Value::record(record, call.head))
     }
 
     Ok(Value::list(final_values, call.head)

@@ -38,7 +38,7 @@ little reason to use this over just writing the values as-is."#
         let value = match args.len() {
             0 => Value::string("", call.head),
             1 => args.pop().expect("one element"),
-            _ => Value::list(args, call.head),
+            _ => Value::list(args.into(), call.head),
         };
         Ok(value.into_pipeline_data())
     }
@@ -48,9 +48,8 @@ little reason to use this over just writing the values as-is."#
             Example {
                 description: "Put a list of numbers in the pipeline. This is the same as [1 2 3].",
                 example: "echo 1 2 3",
-                result: Some(Value::list(
+                result: Some(Value::test_list(
                     vec![Value::test_int(1), Value::test_int(2), Value::test_int(3)],
-                    Span::test_data(),
                 )),
             },
             Example {

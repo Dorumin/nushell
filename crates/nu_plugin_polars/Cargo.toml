@@ -37,6 +37,7 @@ polars-plan = { version = "0.39", features = ["regex"]}
 polars-utils = { version = "0.39"}
 typetag = "0.2"
 uuid = { version = "1.7", features = ["v4", "serde"] }
+im = "15.1.0"
 
 [dependencies.polars]
 features = [

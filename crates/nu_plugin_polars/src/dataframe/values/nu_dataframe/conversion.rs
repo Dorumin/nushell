@@ -961,7 +961,7 @@ fn series_to_values(
                             // empty item
                             vec![]
                         };
-                        Ok(Value::list(sublist, span))
+                        Ok(Value::list(sublist.into(), span))
                     })
                     .collect::<Result<Vec<Value>, ShellError>>()
                 }
@@ -1122,7 +1122,7 @@ fn any_value_to_value(any_value: &AnyValue, span: Span) -> Result<Value, ShellEr
         // Given this, calculate the current date from UTC and add the time.
         AnyValue::Time(nanos) => time_from_midnight(*nanos, span),
         AnyValue::List(series) => {
-            series_to_values(series, None, None, span).map(|values| Value::list(values, span))
+            series_to_values(series, None, None, span).map(|values| Value::list(values.into(), span))
         }
         AnyValue::Struct(_idx, _struct_array, _s_fields) => {
             // This should convert to a StructOwned object.

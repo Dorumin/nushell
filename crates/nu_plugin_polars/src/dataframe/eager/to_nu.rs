@@ -63,13 +63,13 @@ impl PluginCommand for ToNu {
             Example {
                 description: "Shows head rows from dataframe",
                 example: "[[a b]; [1 2] [3 4]] | polars into-df | polars into-nu",
-                result: Some(Value::list(vec![rec_1, rec_2], Span::test_data())),
+                result: Some(Value::test_list(vec![rec_1, rec_2])),
             },
             Example {
                 description: "Shows tail rows from dataframe",
                 example:
                     "[[a b]; [1 2] [5 6] [3 4]] | polars into-df | polars into-nu --tail --rows 1",
-                result: Some(Value::list(vec![rec_3], Span::test_data())),
+                result: Some(Value::test_list(vec![rec_3])),
             },
             Example {
                 description: "Convert a col expression into a nushell value",
@@ -120,7 +120,7 @@ fn dataframe_command(
         }
     };
 
-    let value = Value::list(values, call.head);
+    let value = Value::list(im::Vector::from(values), call.head);
 
     Ok(PipelineData::Value(value, None))
 }

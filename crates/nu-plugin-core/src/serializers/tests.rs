@@ -110,7 +110,7 @@ macro_rules! generate_tests {
 
             let call = EvaluatedCall {
                 head: Span::new(0, 10),
-                positional: vec![
+                positional: im::vector![
                     Value::float(1.0, Span::new(0, 10)),
                     Value::string("something", Span::new(0, 10)),
                 ],

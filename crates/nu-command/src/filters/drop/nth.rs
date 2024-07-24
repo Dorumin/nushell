@@ -80,7 +80,7 @@ impl Command for DropNth {
             Example {
                 example: "[0,1,2,3,4,5] | drop nth 1..",
                 description: "Drop all rows except first row",
-                result: Some(Value::list(vec![Value::test_int(0)], Span::test_data())),
+                result: Some(Value::list(im::vector![Value::test_int(0)], Span::test_data())),
             },
             Example {
                 example: "[0,1,2,3,4,5] | drop nth 3..",

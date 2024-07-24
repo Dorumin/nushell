@@ -937,9 +937,9 @@ fn do_auto_cd(
 
     let shells = stack.get_env_var(engine_state, "NUSHELL_SHELLS");
     let mut shells = if let Some(v) = shells {
-        v.into_list().unwrap_or_else(|_| vec![cwd])
+        v.into_list().unwrap_or_else(|_| im::vector![cwd])
     } else {
-        vec![cwd]
+        im::vector![cwd]
     };
 
     let current_shell = stack.get_env_var(engine_state, "NUSHELL_CURRENT_SHELL");

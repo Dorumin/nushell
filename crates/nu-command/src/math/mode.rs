@@ -86,7 +86,7 @@ impl Command for SubCommand {
                 description: "Compute the mode(s) of the columns of a table",
                 example: "[{a: 1 b: 3} {a: 2 b: -1} {a: 1 b: 5}] | math mode",
                 result: Some(Value::test_record(record! {
-                        "a" => Value::list(vec![Value::test_int(1)], Span::test_data()),
+                        "a" => Value::list(im::vector![Value::test_int(1)], Span::test_data()),
                         "b" => Value::list(
                             vec![Value::test_int(-1), Value::test_int(3), Value::test_int(5)],
                             Span::test_data(),

@@ -125,7 +125,7 @@ impl PluginCommand for LazyAggregate {
         input: PipelineData,
     ) -> Result<PipelineData, LabeledError> {
         let vals: Vec<Value> = call.rest(0)?;
-        let value = Value::list(vals, call.head);
+        let value = Value::list(vals.into(), call.head);
         let expressions = NuExpression::extract_exprs(plugin, value)?;
 
         let group_by = NuLazyGroupBy::try_from_pipeline(plugin, input, call.head)?;

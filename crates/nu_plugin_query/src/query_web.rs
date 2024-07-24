@@ -247,7 +247,7 @@ fn retrieve_table(mut table: WebTable, columns: &Value, span: Span) -> Value {
         return Value::record(record, span);
     }
 
-    let mut table_out = Vec::new();
+    let mut table_out = im::vector![];
     // sometimes there are tables where the first column is the headers, kind of like
     // a table has ben rotated ccw 90 degrees, in these cases all columns will be missing
     // we keep track of this with this variable so we can deal with it later
@@ -263,7 +263,7 @@ fn retrieve_table(mut table: WebTable, columns: &Value, span: Span) -> Value {
                 record.push(format!("column{counter}"), Value::string(cell, span));
             }
         }
-        table_out.push(Value::record(record, span))
+        table_out.push_back(Value::record(record, span))
     } else {
         for row in &table {
             let record = cols
@@ -280,7 +280,7 @@ fn retrieve_table(mut table: WebTable, columns: &Value, span: Span) -> Value {
                     (col.clone(), Value::string(val, span))
                 })
                 .collect();
-            table_out.push(Value::record(record, span))
+            table_out.push_back(Value::record(record, span))
         }
     }
     if !at_least_one_row_filled {
@@ -305,7 +305,7 @@ fn execute_selector_query_with_attribute(
 ) -> Value {
     let doc = Html::parse_fragment(input_string);
 
-    let vals: Vec<Value> = doc
+    let vals: im::Vector<Value> = doc
         .select(&css(query_string, inspect))
         .map(|selection| {
             Value::string(
@@ -326,7 +326,7 @@ fn execute_selector_query(
 ) -> Value {
     let doc = Html::parse_fragment(input_string);
 
-    let vals: Vec<Value> = match as_html {
+    let vals: im::Vector<Value> = match as_html {
         true => doc
             .select(&css(query_string, inspect))
             .map(|selection| Value::string(selection.html(), span))

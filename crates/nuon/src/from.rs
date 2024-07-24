@@ -9,7 +9,7 @@ use std::sync::Arc;
 ///
 // WARNING: please leave the following two trailing spaces, they matter for the documentation
 // formatting
-/// > **Note**  
+/// > **Note**
 /// > [`Span`] can be passed to [`from_nuon`] if there is context available to the caller, e.g. when
 /// > using this function in a command implementation such as
 /// [`from nuon`](https://www.nushell.sh/commands/docs/from_nuon.html).
@@ -204,12 +204,12 @@ fn convert_to_value(
             span: expr.span,
         }),
         Expr::List(vals) => {
-            let mut output = vec![];
+            let mut output = im::vector![];
 
             for item in vals {
                 match item {
                     ListItem::Item(expr) => {
-                        output.push(convert_to_value(expr, span, original_text)?);
+                        output.push_back(convert_to_value(expr, span, original_text)?);
                     }
                     ListItem::Spread(_, inner) => {
                         return Err(ShellError::OutsideSpannedLabeledError {
@@ -332,7 +332,7 @@ fn convert_to_value(
         Expr::Table(mut table) => {
             let mut cols = vec![];
 
-            let mut output = vec![];
+            let mut output = im::vector![];
 
             for key in table.columns.as_mut() {
                 let key_str = match &mut key.expr {
@@ -376,7 +376,7 @@ fn convert_to_value(
                     })
                     .collect::<Result<_, _>>()?;
 
-                output.push(Value::record(record, span));
+                output.push_back(Value::record(record, span));
             }
 
             Ok(Value::list(output, span))

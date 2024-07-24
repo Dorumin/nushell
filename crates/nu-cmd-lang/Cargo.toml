@@ -19,6 +19,7 @@ nu-utils = { path = "../nu-utils", version = "0.94.1" }
 
 itertools = { workspace = true }
 shadow-rs = { version = "0.28", default-features = false }
+im = "15.1.0"
 
 [build-dependencies]
 shadow-rs = { version = "0.28", default-features = false }

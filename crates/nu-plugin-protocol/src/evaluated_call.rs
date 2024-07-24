@@ -21,7 +21,7 @@ pub struct EvaluatedCall {
     /// Span of the command invocation
     pub head: Span,
     /// Values of positional arguments
-    pub positional: Vec<Value>,
+    pub positional: im::Vector<Value>,
     /// Names and values of named arguments
     pub named: Vec<(Spanned<String>, Option<Value>)>,
 }
@@ -373,7 +373,7 @@ mod test {
     fn call_to_value() {
         let call = EvaluatedCall {
             head: Span::new(0, 10),
-            positional: vec![
+            positional: im::vector![
                 Value::float(1.0, Span::new(0, 10)),
                 Value::string("something", Span::new(0, 10)),
             ],

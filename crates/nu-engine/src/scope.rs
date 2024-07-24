@@ -46,8 +46,8 @@ impl<'e, 's> ScopeData<'e, 's> {
         }
     }
 
-    pub fn collect_vars(&self, span: Span) -> Vec<Value> {
-        let mut vars = vec![];
+    pub fn collect_vars(&self, span: Span) -> im::Vector<Value> {
+        let mut vars = im::vector![];
 
         for (var_name, var_id) in &self.vars_map {
             let var_name = Value::string(String::from_utf8_lossy(var_name).to_string(), span);
@@ -64,7 +64,7 @@ impl<'e, 's> ScopeData<'e, 's> {
 
             let var_id_val = Value::int(**var_id as i64, span);
 
-            vars.push(Value::record(
+            vars.push_back(Value::record(
                 record! {
                     "name" => var_name,
                     "type" => var_type,
@@ -77,11 +77,12 @@ impl<'e, 's> ScopeData<'e, 's> {
         }
 
         sort_rows(&mut vars);
+
         vars
     }
 
-    pub fn collect_commands(&self, span: Span) -> Vec<Value> {
-        let mut commands = vec![];
+    pub fn collect_commands(&self, span: Span) -> im::Vector<Value> {
+        let mut commands = im::vector![];
 
         for (command_name, decl_id) in &self.decls_map {
             if self.visibility.is_decl_id_visible(decl_id)
@@ -119,7 +120,7 @@ impl<'e, 's> ScopeData<'e, 's> {
                     "decl_id" => Value::int(**decl_id as i64, span),
                 };
 
-                commands.push(Value::record(record, span))
+                commands.push_back(Value::record(record, span))
             }
         }
 
@@ -176,11 +177,11 @@ impl<'e, 's> ScopeData<'e, 's> {
         output_type: &Type,
         signature: &Signature,
         span: Span,
-    ) -> Vec<Value> {
-        let mut sig_records = vec![];
+    ) -> im::Vector<Value> {
+        let mut sig_records = im::vector![];
 
         // input
-        sig_records.push(Value::record(
+        sig_records.push_back(Value::record(
             record! {
                 "parameter_name" => Value::nothing(span),
                 "parameter_type" => Value::string("input", span),
@@ -198,7 +199,7 @@ impl<'e, 's> ScopeData<'e, 's> {
         for req in &signature.required_positional {
             let custom = extract_custom_completion_from_arg(self.engine_state, &req.shape);
 
-            sig_records.push(Value::record(
+            sig_records.push_back(Value::record(
                 record! {
                     "parameter_name" => Value::string(&req.name, span),
                     "parameter_type" => Value::string("positional", span),
@@ -222,7 +223,7 @@ impl<'e, 's> ScopeData<'e, 's> {
                 Value::nothing(span)
             };
 
-            sig_records.push(Value::record(
+            sig_records.push_back(Value::record(
                 record! {
                     "parameter_name" => Value::string(&opt.name, span),
                     "parameter_type" => Value::string("positional", span),
@@ -242,7 +243,7 @@ impl<'e, 's> ScopeData<'e, 's> {
             let name = if rest.name == "rest" { "" } else { &rest.name };
             let custom = extract_custom_completion_from_arg(self.engine_state, &rest.shape);
 
-            sig_records.push(Value::record(
+            sig_records.push_back(Value::record(
                 record! {
                     "parameter_name" => Value::string(name, span),
                     "parameter_type" => Value::string("rest", span),
@@ -290,7 +291,7 @@ impl<'e, 's> ScopeData<'e, 's> {
                 Value::nothing(span)
             };
 
-            sig_records.push(Value::record(
+            sig_records.push_back(Value::record(
                 record! {
                     "parameter_name" => Value::string(&named.long, span),
                     "parameter_type" => flag_type,
@@ -306,7 +307,7 @@ impl<'e, 's> ScopeData<'e, 's> {
         }
 
         // output
-        sig_records.push(Value::record(
+        sig_records.push_back(Value::record(
             record! {
                 "parameter_name" => Value::nothing(span),
                 "parameter_type" => Value::string("output", span),
@@ -323,8 +324,8 @@ impl<'e, 's> ScopeData<'e, 's> {
         sig_records
     }
 
-    pub fn collect_externs(&self, span: Span) -> Vec<Value> {
-        let mut externals = vec![];
+    pub fn collect_externs(&self, span: Span) -> im::Vector<Value> {
+        let mut externals = im::vector![];
 
         for (command_name, decl_id) in &self.decls_map {
             let decl = self.engine_state.get_decl(**decl_id);
@@ -336,7 +337,7 @@ impl<'e, 's> ScopeData<'e, 's> {
                     "decl_id" => Value::int(**decl_id as i64, span),
                 };
 
-                externals.push(Value::record(record, span))
+                externals.push_back(Value::record(record, span))
             }
         }
 
@@ -344,8 +345,8 @@ impl<'e, 's> ScopeData<'e, 's> {
         externals
     }
 
-    pub fn collect_aliases(&self, span: Span) -> Vec<Value> {
-        let mut aliases = vec![];
+    pub fn collect_aliases(&self, span: Span) -> im::Vector<Value> {
+        let mut aliases = im::vector![];
 
         for (decl_name, decl_id) in self.engine_state.get_decls_sorted(false) {
             if self.visibility.is_decl_id_visible(&decl_id) {
@@ -362,7 +363,7 @@ impl<'e, 's> ScopeData<'e, 's> {
                         self.engine_state.get_span_contents(alias.wrapped_call.span),
                     );
 
-                    aliases.push(Value::record(
+                    aliases.push_back(Value::record(
                         record! {
                             "name" => Value::string(String::from_utf8_lossy(&decl_name), span),
                             "expansion" => Value::string(expansion, span),
@@ -386,7 +387,7 @@ impl<'e, 's> ScopeData<'e, 's> {
 
         let all_decls = module.decls();
 
-        let mut export_commands: Vec<Value> = all_decls
+        let mut export_commands: im::Vector<Value> = all_decls
             .iter()
             .filter_map(|(name_bytes, decl_id)| {
                 let decl = self.engine_state.get_decl(*decl_id);
@@ -405,7 +406,7 @@ impl<'e, 's> ScopeData<'e, 's> {
             })
             .collect();
 
-        let mut export_aliases: Vec<Value> = all_decls
+        let mut export_aliases: im::Vector<Value> = all_decls
             .iter()
             .filter_map(|(name_bytes, decl_id)| {
                 let decl = self.engine_state.get_decl(*decl_id);
@@ -424,7 +425,7 @@ impl<'e, 's> ScopeData<'e, 's> {
             })
             .collect();
 
-        let mut export_externs: Vec<Value> = all_decls
+        let mut export_externs: im::Vector<Value> = all_decls
             .iter()
             .filter_map(|(name_bytes, decl_id)| {
                 let decl = self.engine_state.get_decl(*decl_id);
@@ -443,13 +444,13 @@ impl<'e, 's> ScopeData<'e, 's> {
             })
             .collect();
 
-        let mut export_submodules: Vec<Value> = module
+        let mut export_submodules: im::Vector<Value> = module
             .submodules()
             .iter()
             .map(|(name_bytes, submodule_id)| self.collect_module(name_bytes, submodule_id, span))
             .collect();
 
-        let mut export_consts: Vec<Value> = module
+        let mut export_consts: im::Vector<Value> = module
             .consts()
             .iter()
             .map(|(name_bytes, var_id)| {
@@ -492,11 +493,11 @@ impl<'e, 's> ScopeData<'e, 's> {
         )
     }
 
-    pub fn collect_modules(&self, span: Span) -> Vec<Value> {
-        let mut modules = vec![];
+    pub fn collect_modules(&self, span: Span) -> im::Vector<Value> {
+        let mut modules = im::vector![];
 
         for (module_name, module_id) in &self.modules_map {
-            modules.push(self.collect_module(module_name, module_id, span));
+            modules.push_back(self.collect_module(module_name, module_id, span));
         }
 
         modules.sort_by(|a, b| a.partial_cmp(b).unwrap_or(Ordering::Equal));
@@ -536,7 +537,7 @@ fn extract_custom_completion_from_arg(engine_state: &EngineState, shape: &Syntax
     };
 }
 
-fn sort_rows(decls: &mut [Value]) {
+fn sort_rows(decls: &mut im::Vector<Value>) {
     decls.sort_by(|a, b| match (a, b) {
         (Value::Record { val: rec_a, .. }, Value::Record { val: rec_b, .. }) => {
             // Comparing the first value from the record

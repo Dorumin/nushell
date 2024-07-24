@@ -230,7 +230,7 @@ mod tests {
         .expect_err("Expected non-valid toml (String) to cause error!");
         value_to_toml_value(
             &engine_state,
-            &Value::list(vec![Value::test_string("1")], Span::test_data()),
+            &Value::list(im::vector![Value::test_string("1")], Span::test_data()),
             Span::test_data(),
         )
         .expect_err("Expected non-valid toml (Table) to cause error!");

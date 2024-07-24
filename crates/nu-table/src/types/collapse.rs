@@ -65,7 +65,7 @@ fn colorize_value(value: &mut Value, config: &Config, style_computer: &StyleComp
             );
         }
         Value::List { vals, .. } => {
-            for val in vals {
+            for val in vals.iter_mut() {
                 colorize_value(val, config, style_computer);
             }
         }

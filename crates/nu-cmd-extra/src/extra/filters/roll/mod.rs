@@ -17,6 +17,28 @@ enum VerticalDirection {
     Down,
 }
 
+// This is a reimplementation of rotate_left and rotate_right's methods from Rust's Vec,
+// hopefully not losing too much performance.
+fn rotate_im_vector<T: Clone>(v: &im::Vector<T>, by: Option<usize>, direction: VerticalDirection) -> im::Vector<T> {
+    let rotations = by.map(|n| n % v.len()).unwrap_or(1);
+    let mut scratch = v.clone();
+
+    match direction {
+        VerticalDirection::Up => {
+            let suffix = scratch.slice(0..rotations);
+            scratch.append(suffix);
+
+            scratch
+        }
+        VerticalDirection::Down => {
+            let mut prefix = scratch.slice((v.len() - rotations)..);
+            prefix.append(scratch);
+
+            prefix
+        }
+    }
+}
+
 fn vertical_rotate_value(
     value: Value,
     by: Option<usize>,
@@ -24,16 +46,8 @@ fn vertical_rotate_value(
 ) -> Result<Value, ShellError> {
     let span = value.span();
     match value {
-        Value::List { mut vals, .. } => {
-            let rotations = by.map(|n| n % vals.len()).unwrap_or(1);
-            let values = vals.as_mut_slice();
-
-            match direction {
-                VerticalDirection::Up => values.rotate_left(rotations),
-                VerticalDirection::Down => values.rotate_right(rotations),
-            }
-
-            Ok(Value::list(values.to_owned(), span))
+        Value::List { vals, .. } => {
+            Ok(Value::list(rotate_im_vector(&vals, by, direction), span))
         }
         _ => Err(ShellError::TypeMismatch {
             err_message: "list".to_string(),
@@ -78,7 +92,7 @@ fn horizontal_rotate_value(
             let values = vals
                 .into_iter()
                 .map(|value| horizontal_rotate_value(value, by, cells_only, direction))
-                .collect::<Result<Vec<Value>, ShellError>>()?;
+                .collect::<Result<im::Vector<Value>, ShellError>>()?;
 
             Ok(Value::list(values, span))
         }

@@ -97,17 +97,17 @@ pub fn eval_call<D: DebugContext>(
         }
 
         if let Some(rest_positional) = decl.signature().rest_positional {
-            let mut rest_items = vec![];
+            let mut rest_items = im::vector![];
 
             for result in call.rest_iter_flattened(
                 decl.signature().required_positional.len()
                     + decl.signature().optional_positional.len(),
                 |expr| eval_expression::<D>(engine_state, caller_stack, expr),
             )? {
-                rest_items.push(result);
+                rest_items.push_back(result);
             }
 
-            let span = if let Some(rest_item) = rest_items.first() {
+            let span = if let Some(rest_item) = rest_items.front() {
                 rest_item.span()
             } else {
                 call.head

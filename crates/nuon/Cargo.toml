@@ -15,6 +15,7 @@ nu-protocol = { path = "../nu-protocol", version = "0.94.1" }
 nu-engine = { path = "../nu-engine", version = "0.94.1" }
 once_cell = { workspace = true }
 fancy-regex = { workspace = true }
+im = "15.1.0"
 
 [dev-dependencies]
 chrono = { workspace = true }

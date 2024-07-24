@@ -30,9 +30,8 @@ impl PluginCommand for ColumnsDF {
         vec![Example {
             description: "Dataframe columns",
             example: "[[a b]; [1 2] [3 4]] | polars into-df | polars columns",
-            result: Some(Value::list(
-                vec![Value::test_string("a"), Value::test_string("b")],
-                Span::test_data(),
+            result: Some(Value::test_list(
+                vec![Value::test_string("a"), Value::test_string("b")]
             )),
         }]
     }
@@ -55,7 +54,7 @@ fn command(
 ) -> Result<PipelineData, ShellError> {
     let df = NuDataFrame::try_from_pipeline_coerce(plugin, input, call.head)?;
 
-    let names: Vec<Value> = df
+    let names: im::Vector<Value> = df
         .as_ref()
         .get_column_names()
         .iter()

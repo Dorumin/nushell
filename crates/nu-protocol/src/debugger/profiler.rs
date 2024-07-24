@@ -298,7 +298,7 @@ fn collect_data(
     element_id: ElementId,
     parent_id: ElementId,
     profiler_span: Span,
-) -> Result<Vec<Value>, ShellError> {
+) -> Result<im::Vector<Value>, ShellError> {
     let element = &profiler.elements[element_id.0];
 
     let mut row = record! {
@@ -368,7 +368,7 @@ fn collect_data(
         Value::float(element.duration_sec * 1e3, profiler_span),
     );
 
-    let mut rows = vec![Value::record(row, profiler_span)];
+    let mut rows = im::vector![Value::record(row, profiler_span)];
 
     for child in &element.children {
         let child_rows = collect_data(engine_state, profiler, *child, element_id, profiler_span)?;

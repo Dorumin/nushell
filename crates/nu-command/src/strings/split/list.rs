@@ -126,7 +126,7 @@ impl Command for SubCommand {
                 example: r"[a, b, c, d, a, e, f, g] | split list --regex '(b|e)'",
                 result: Some(Value::list(
                     vec![
-                        Value::list(vec![Value::test_string("a")], Span::test_data()),
+                        Value::list(im::vector![Value::test_string("a")], Span::test_data()),
                         Value::list(
                             vec![
                                 Value::test_string("c"),

@@ -222,8 +222,8 @@ impl NuDataFrame {
         add_missing_columns(df, &maybe_schema, Span::unknown())
     }
 
-    pub fn fill_list_nan(list: Vec<Value>, list_span: Span, fill: Value) -> Value {
-        let newlist = list
+    pub fn fill_list_nan(list: im::Vector<Value>, list_span: Span, fill: Value) -> Value {
+        let newlist: im::Vector<_> = list
             .into_iter()
             .map(|value| {
                 let span = value.span();
@@ -239,7 +239,7 @@ impl NuDataFrame {
                     _ => value,
                 }
             })
-            .collect::<Vec<Value>>();
+            .collect();
         Value::list(newlist, list_span)
     }
 
@@ -603,7 +603,7 @@ impl CustomValueSupport for NuDataFrame {
 
     fn base_value(self, span: Span) -> Result<Value, ShellError> {
         let vals = self.print(span)?;
-        Ok(Value::list(vals, span))
+        Ok(Value::list(vals.into(), span))
     }
 
     fn get_type_static() -> PolarsPluginType {
