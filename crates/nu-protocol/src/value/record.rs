@@ -5,9 +5,17 @@ use crate::{ShellError, Span, Value};
 
 use serde::{de::Visitor, ser::SerializeMap, Deserialize, Serialize};
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Default)]
 pub struct Record {
-    inner: Vec<(String, Value)>,
+    inner: im::Vector<(String, Value)>,
+}
+
+impl Clone for Record {
+    fn clone(&self) -> Self {
+        eprintln!("clonin");
+
+        Self { inner: self.inner.clone() }
+    }
 }
 
 impl Record {
@@ -15,9 +23,9 @@ impl Record {
         Self::default()
     }
 
-    pub fn with_capacity(capacity: usize) -> Self {
+    pub fn with_capacity(_capacity: usize) -> Self {
         Self {
-            inner: Vec::with_capacity(capacity),
+            inner: im::Vector::new(),
         }
     }
 
@@ -66,7 +74,7 @@ impl Record {
     ///
     /// Consider to use [`Record::insert`] instead
     pub fn push(&mut self, col: impl Into<String>, val: Value) {
-        self.inner.push((col.into(), val));
+        self.inner.push_back((col.into(), val));
     }
 
     /// Insert into the record, replacing preexisting value if found.
@@ -184,7 +192,23 @@ impl Record {
     where
         F: FnMut(&str, &mut Value) -> bool,
     {
-        self.inner.retain_mut(|(col, val)| keep(col, val));
+        let len = self.len();
+        let mut del = 0;
+        {
+            let mut focus = self.inner.focus_mut();
+            for i in 0..len {
+                let (key, value) = focus.index_mut(i);
+
+                if !keep(key, value) {
+                    del += 1;
+                } else if del > 0 {
+                    focus.swap(i - del, i);
+                }
+            }
+        }
+        if del > 0 {
+            let _ = self.inner.split_off(len - del);
+        }
     }
 
     /// Truncate record to the first `len` elements.
@@ -261,7 +285,7 @@ impl Record {
         R: RangeBounds<usize> + Clone,
     {
         Drain {
-            iter: self.inner.drain(range),
+            iter: self.inner.slice(range).into_iter()
         }
     }
 
@@ -383,7 +407,7 @@ impl Extend<(String, Value)> for Record {
 }
 
 pub struct IntoIter {
-    iter: std::vec::IntoIter<(String, Value)>,
+    iter: im::vector::ConsumingIter<(String, Value)>,
 }
 
 impl Iterator for IntoIter {
@@ -425,7 +449,7 @@ impl IntoIterator for Record {
 }
 
 pub struct Iter<'a> {
-    iter: std::slice::Iter<'a, (String, Value)>,
+    iter: im::vector::Iter<'a, (String, Value)>,
 }
 
 impl<'a> Iterator for Iter<'a> {
@@ -467,7 +491,7 @@ impl<'a> IntoIterator for &'a Record {
 }
 
 pub struct IterMut<'a> {
-    iter: std::slice::IterMut<'a, (String, Value)>,
+    iter: im::vector::IterMut<'a, (String, Value)>,
 }
 
 impl<'a> Iterator for IterMut<'a> {
@@ -509,7 +533,7 @@ impl<'a> IntoIterator for &'a mut Record {
 }
 
 pub struct Columns<'a> {
-    iter: std::slice::Iter<'a, (String, Value)>,
+    iter: im::vector::Iter<'a, (String, Value)>,
 }
 
 impl<'a> Iterator for Columns<'a> {
@@ -539,7 +563,7 @@ impl<'a> ExactSizeIterator for Columns<'a> {
 impl FusedIterator for Columns<'_> {}
 
 pub struct IntoColumns {
-    iter: std::vec::IntoIter<(String, Value)>,
+    iter: im::vector::ConsumingIter<(String, Value)>,
 }
 
 impl Iterator for IntoColumns {
@@ -569,7 +593,7 @@ impl ExactSizeIterator for IntoColumns {
 impl FusedIterator for IntoColumns {}
 
 pub struct Values<'a> {
-    iter: std::slice::Iter<'a, (String, Value)>,
+    iter: im::vector::Iter<'a, (String, Value)>,
 }
 
 impl<'a> Iterator for Values<'a> {
@@ -599,7 +623,7 @@ impl<'a> ExactSizeIterator for Values<'a> {
 impl FusedIterator for Values<'_> {}
 
 pub struct IntoValues {
-    iter: std::vec::IntoIter<(String, Value)>,
+    iter: im::vector::ConsumingIter<(String, Value)>,
 }
 
 impl Iterator for IntoValues {
@@ -628,11 +652,11 @@ impl ExactSizeIterator for IntoValues {
 
 impl FusedIterator for IntoValues {}
 
-pub struct Drain<'a> {
-    iter: std::vec::Drain<'a, (String, Value)>,
+pub struct Drain {
+    iter: im::vector::ConsumingIter<(String, Value)>,
 }
 
-impl Iterator for Drain<'_> {
+impl Iterator for Drain {
     type Item = (String, Value);
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -644,19 +668,19 @@ impl Iterator for Drain<'_> {
     }
 }
 
-impl DoubleEndedIterator for Drain<'_> {
+impl DoubleEndedIterator for Drain {
     fn next_back(&mut self) -> Option<Self::Item> {
         self.iter.next_back()
     }
 }
 
-impl ExactSizeIterator for Drain<'_> {
+impl ExactSizeIterator for Drain {
     fn len(&self) -> usize {
         self.iter.len()
     }
 }
 
-impl FusedIterator for Drain<'_> {}
+impl FusedIterator for Drain {}
 
 #[macro_export]
 macro_rules! record {
